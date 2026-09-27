@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meeting Time Converter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+[hidden]{display:none!important}
+body{margin:0}
+:root{
+  --bg:#F2F4F7; --surface:#FFFFFF; --ink:#16233A; --muted:#5A6678; --line:#D8DEE7; --line-strong:#B9C3D1;
+  --accent:#1F4E8C; --accent-ink:#FFFFFF; --input:#FFF3B8; --input-line:#E2C94A; --input-ink:#8A1C1C;
+  --head:#E8EDF4; --ok:#1E7A4F; --err:#B42318; --err-bg:#FDECEA;
+  --good:#DDF3E6; --good-ink:#14532D; --warn:#FDEBD0; --warn-ink:#7A3E00; --bad:#FADADD; --bad-ink:#8A1C1C; --drop:#1F4E8C;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F1623; --surface:#172131; --ink:#E6ECF5; --muted:#9AA7BA; --line:#2A374B; --line-strong:#3A4A62;
+    --accent:#7FB0F0; --accent-ink:#0F1623; --input:#3A3413; --input-line:#8F7B24; --input-ink:#FFD9A0;
+    --head:#1E2A3D; --ok:#5CCB94; --err:#FF8A80; --err-bg:#3A1B1B;
+    --good:#15392A; --good-ink:#9BE5BD; --warn:#3D2C12; --warn-ink:#FFCB8A; --bad:#43191E; --bad-ink:#FFA3A3; --drop:#7FB0F0;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F1623; --surface:#172131; --ink:#E6ECF5; --muted:#9AA7BA; --line:#2A374B; --line-strong:#3A4A62;
+  --accent:#7FB0F0; --accent-ink:#0F1623; --input:#3A3413; --input-line:#8F7B24; --input-ink:#FFD9A0;
+  --head:#1E2A3D; --ok:#5CCB94; --err:#FF8A80; --err-bg:#3A1B1B;
+    --good:#15392A; --good-ink:#9BE5BD; --warn:#3D2C12; --warn-ink:#FFCB8A; --bad:#43191E; --bad-ink:#FFA3A3; --drop:#7FB0F0;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.45;padding:28px 16px 48px}
+.wrap{max-width:1080px;margin:0 auto;display:grid;gap:20px}
+h1{font-size:1.6rem;margin:0;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+.sub{margin:4px 0 0;color:var(--muted);max-width:62ch}
+.bar{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:end;justify-content:space-between}
+.field{display:grid;gap:4px}
+label,.lbl{font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+select,input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:6px;padding:7px 10px}
+select:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+button{font:inherit;font-weight:600;cursor:pointer;border-radius:6px;padding:8px 14px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink)}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:100%}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:center;white-space:nowrap}
+th.rowlbl,td.rowlbl{text-align:left;font-weight:500;color:var(--ink);background:var(--head);position:sticky;left:0;z-index:1}
+tr.in td{background:var(--input);border-color:var(--input-line);padding:4px 6px}
+tr.in td.rowlbl{background:var(--head);border-color:var(--line)}
+tr.in input{width:100%;min-width:118px;text-align:center;background:transparent;border:1px solid transparent;color:var(--input-ink);font-family:var(--mono);font-weight:600}
+tr.in input:hover{border-color:var(--input-line)}
+tr.in input.bad{background:var(--err-bg);border-color:var(--err);color:var(--err)}
+thead th{background:var(--head);font-size:.8rem;color:var(--muted);font-weight:600}
+.colhead{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--ink)}
+.x{border:none;background:none;padding:0 4px;color:var(--muted);font-size:1rem;line-height:1}
+.x:hover{color:var(--err)}
+.del{display:inline-flex;align-items:center;gap:4px;border:1px solid transparent;background:none;padding:2px 8px;border-radius:999px;font-size:.78rem;font-weight:500;color:var(--muted)}
+.del:hover{color:var(--err);border-color:var(--err);background:var(--err-bg)}
+.undo{padding:2px 10px;margin-left:6px;font-size:.85rem}
+tr.sep td{padding:0;height:6px;background:var(--bg);border-left:none;border-right:none}
+tr.date td{font-weight:700}
+td.out{font-family:var(--mono);font-size:.92rem}
+td.out .tag{color:var(--muted);font-family:var(--sans);font-size:.8rem}
+tr.base td.out{font-weight:600}
+.grip{border:none;background:none;padding:2px 4px;margin-right:6px;color:var(--muted);cursor:grab;touch-action:none;font-size:.9rem;letter-spacing:-2px;line-height:1;border-radius:4px}
+.grip:hover{color:var(--accent);background:var(--surface)}
+body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
+tr.moving td,th.moving,td.moving{outline:2px dashed var(--drop);outline-offset:-2px}
+td.out.office{background:var(--good);color:var(--good-ink)}
+td.out.edge{background:var(--warn);color:var(--warn-ink)}
+td.out.night{background:var(--bad);color:var(--bad-ink)}
+td.out .tag{color:inherit;opacity:.75}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.85rem;color:var(--muted);align-items:center}
+.sw{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid var(--line)}
+.sw.office{background:var(--good)} .sw.edge{background:var(--warn)} .sw.night{background:var(--bad)}
+.hint{font-size:.85rem;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);border-radius:999px;padding:4px 6px 4px 12px;font-size:.88rem;background:var(--surface)}
+.chip.base{background:var(--head);padding-right:12px}
+.toast{min-height:1.3em;font-size:.88rem;color:var(--ok);font-weight:600}
+textarea.fallback{width:100%;height:120px;font-family:var(--mono);font-size:.8rem;background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);border-radius:6px;padding:8px}
+@media (max-width:560px){ h1{font-size:1.35rem} .bar{align-items:stretch} .actions{width:100%} .actions button{flex:1} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <h1>Meeting Time Converter</h1>
+    <p class="sub">Type the date, start time and duration in the yellow cells. The time zone rows update by themselves, with daylight saving handled. Then press <b>Copy for Excel</b> and paste into any cell.</p>
+  </header>
+
+  <div class="bar">
+    <div class="field">
+      <label for="loc">Your location (start time is in this zone)</label>
+      <select id="loc"></select>
+    </div>
+    <div class="actions">
+      <button id="addCol" type="button">+ Add meeting</button>
+      <button id="copy" class="primary" type="button">Copy for Excel</button>
+    </div>
+  </div>
+
+  <section class="panel">
+    <div class="scroll"><table id="grid"></table></div>
+    <div class="legend"><span><span class="sw office"></span>Office hours (0800–1800)</span><span><span class="sw edge"></span>Early / late</span><span><span class="sw night"></span>Overnight (2200–0700)</span></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <textarea class="fallback" id="fallback" hidden readonly aria-label="Copy this text"></textarea>
+    <p class="hint">Start time: 24H format, e.g. <code>800</code>, <code>0930</code> or <code>14:00</code>. “(prev day)” / “(next day)” is compared with the date in your location. Drag <b>⋮⋮</b> to move a time zone row up/down or a meeting column left/right (or focus it and use the arrow keys).</p>
+  </section>
+
+  <section class="panel">
+    <span class="lbl">Time zones shown</span>
+    <div class="chips" id="chips"></div>
+    <div class="field" style="max-width:320px">
+      <label for="addZone">Add a time zone</label>
+      <select id="addZone"></select>
+    </div>
+  </section>
+</div>
+
+<script>
+const ZONES = {
+  HKT:{tz:"Asia/Hong_Kong",std:"HKT",dst:"HKT",city:"Hong Kong"},
+  JST:{tz:"Asia/Tokyo",std:"JST",dst:"JST",city:"Tokyo"},
+  AET:{tz:"Australia/Sydney",std:"AEST",dst:"AEDT",city:"Sydney / Melbourne"},
+  UKT:{tz:"Europe/London",std:"GMT",dst:"BST",city:"London"},
+  ET:{tz:"America/New_York",std:"EST",dst:"EDT",city:"Baltimore / New York"},
+  SGT:{tz:"Asia/Singapore",std:"SGT",dst:"SGT",city:"Singapore"},
+  CST8:{tz:"Asia/Shanghai",std:"CST",dst:"CST",city:"Shanghai / Beijing"},
+  TWT:{tz:"Asia/Taipei",std:"TWT",dst:"TWT",city:"Taipei"},
+  KST:{tz:"Asia/Seoul",std:"KST",dst:"KST",city:"Seoul"},
+  PHT:{tz:"Asia/Manila",std:"PHT",dst:"PHT",city:"Manila"},
+  ICT:{tz:"Asia/Bangkok",std:"ICT",dst:"ICT",city:"Bangkok"},
+  IST:{tz:"Asia/Kolkata",std:"IST",dst:"IST",city:"Mumbai"},
+  GST:{tz:"Asia/Dubai",std:"GST",dst:"GST",city:"Dubai"},
+  AEQ:{tz:"Australia/Brisbane",std:"AEST",dst:"AEST",city:"Brisbane"},
+  AWST:{tz:"Australia/Perth",std:"AWST",dst:"AWST",city:"Perth"},
+  NZT:{tz:"Pacific/Auckland",std:"NZST",dst:"NZDT",city:"Auckland"},
+  CET:{tz:"Europe/Paris",std:"CET",dst:"CEST",city:"Paris / Frankfurt / Zurich"},
+  CT:{tz:"America/Chicago",std:"CST",dst:"CDT",city:"Chicago"},
+  PT:{tz:"America/Los_Angeles",std:"PST",dst:"PDT",city:"Los Angeles / San Francisco"}
+};
+const DEFAULT = {
+  base:"HKT",
+  zones:["HKT","JST","AET","UKT","ET"],
+  cols:[{date:"",start:"0900",dur:"30"}]
+};
+/* next Mon–Fri after today, in the given location */
+function nextWorkingDay(baseKey){
+  const t=parts(ZONES[baseKey||"HKT"].tz,Date.now());
+  for(let n=1;n<8;n++){
+    const d=new Date(Date.UTC(t.y,t.m-1,t.d+n)), w=d.getUTCDay();
+    if(w!==0&&w!==6) return d.toISOString().slice(0,10);
+  }
+}
+DEFAULT.cols[0].date=nextWorkingDay(DEFAULT.base);
+let state = load() || structuredClone(DEFAULT);
+/* show start times as 4 digits, e.g. 900 -> 0900 */
+function fmtStart(v){ const t=parseStart(v); return t?String(t.h).padStart(2,"0")+String(t.m).padStart(2,"0"):v; }
+state.cols.forEach(c=>c.start=fmtStart(c.start));
+
+function load(){ try{ const s=JSON.parse(localStorage.getItem("mtc-state-v2")); return s&&s.cols&&s.zones?s:null; }catch(e){ return null; } }
+function save(){ try{ localStorage.setItem("mtc-state-v2",JSON.stringify(state)); }catch(e){} }
+
+/* ---- time maths ---- */
+function offsetMin(tz, ms){
+  const p = {}; new Intl.DateTimeFormat("en-US",{timeZone:tz,hourCycle:"h23",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})
+    .formatToParts(new Date(ms)).forEach(x=>p[x.type]=x.value);
+  const asUTC = Date.UTC(+p.year,+p.month-1,+p.day,+p.hour%24,+p.minute);
+  return Math.round((asUTC - Math.floor(ms/60000)*60000)/60000);
+}
+function wallToUTC(tz,y,m,d,h,mi){
+  const guess = Date.UTC(y,m-1,d,h,mi);
+  let utc = guess - offsetMin(tz,guess)*60000;
+  const o2 = offsetMin(tz,utc); utc = guess - o2*60000;
+  return utc;
+}
+function parts(tz, ms){
+  const p={}; new Intl.DateTimeFormat("en-US",{timeZone:tz,hourCycle:"h23",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})
+    .formatToParts(new Date(ms)).forEach(x=>p[x.type]=x.value);
+  return {y:+p.year,m:+p.month,d:+p.day,h:+p.hour%24,mi:+p.minute};
+}
+function isDST(tz, ms){
+  const y = new Date(ms).getUTCFullYear();
+  const std = Math.min(offsetMin(tz,Date.UTC(y,0,15)), offsetMin(tz,Date.UTC(y,6,15)));
+  return offsetMin(tz,ms) > std;
+}
+function utcLabel(min){ const s=min<0?"-":"+"; min=Math.abs(min); const h=Math.floor(min/60), m=min%60; return "UTC"+s+h+(m?":"+String(m).padStart(2,"0"):""); }
+function rowLabel(key){
+  const z=ZONES[key];
+  if(z.std!==z.dst) return z.std+"/"+z.dst;
+  return z.std+" ("+utcLabel(offsetMin(z.tz,Date.now()))+")";
+}
+function hhmm(p){ return String(p.h).padStart(2,"0")+String(p.mi).padStart(2,"0"); }
+function parseStart(s){
+  s=String(s||"").trim().replace(/[.:hH]/g,"");
+  if(!/^\d{1,4}$/.test(s)) return null;
+  let h,m;
+  if(s.length<=2){ h=+s; m=0; } else { h=+s.slice(0,-2); m=+s.slice(-2); }
+  if(h>23||m>59) return null; return {h,m};
+}
+function parseDate(s){ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||""); return m?{y:+m[1],m:+m[2],d:+m[3]}:null; }
+function dateHeading(d){
+  const dt=new Date(Date.UTC(d.y,d.m-1,d.d));
+  return dt.toLocaleDateString("en-US",{timeZone:"UTC",weekday:"short",month:"short",day:"2-digit"});
+}
+function compute(col){
+  const d=parseDate(col.date), s=parseStart(col.start), dur=parseInt(col.dur,10);
+  if(!d||!s||!(dur>0)) return null;
+  const baseTz=ZONES[state.base].tz;
+  const startUTC=wallToUTC(baseTz,d.y,d.m,d.d,s.h,s.m), endUTC=startUTC+dur*60000;
+  const baseDay=Date.UTC(d.y,d.m-1,d.d);
+  const rows={};
+  for(const k of zoneOrder()){
+    const z=ZONES[k], a=parts(z.tz,startUTC), b=parts(z.tz,endUTC);
+    const abbr=isDST(z.tz,startUTC)?z.dst:z.std;
+    const diff=Math.round((Date.UTC(a.y,a.m-1,a.d)-baseDay)/86400000);
+    const tag=diff<0?" (prev day)":diff>0?" (next day)":"";
+    const sm=a.h*60+a.mi, em=b.h*60+b.mi, cross=(b.d!==a.d);
+    const cls=(sm<420||sm>=1320)?"night":(!cross&&sm>=480&&em<=1080)?"office":"edge";
+    rows[k]={time:hhmm(a)+"-"+hhmm(b)+" "+abbr, tag, cls};
+  }
+  return {heading:dateHeading(d), rows};
+}
+function zoneOrder(){ return state.zones.includes(state.base)?state.zones.slice():[state.base,...state.zones]; }
+
+/* ---- render ---- */
+const $=id=>document.getElementById(id);
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function renderSelects(){
+  $("loc").innerHTML=Object.entries(ZONES).map(([k,z])=>`<option value="${k}" ${k===state.base?"selected":""}>${esc(z.city)} — ${esc(rowLabel(k))}</option>`).join("");
+  const avail=Object.keys(ZONES).filter(k=>!zoneOrder().includes(k));
+  $("addZone").innerHTML=`<option value="">Choose a city…</option>`+avail.map(k=>`<option value="${k}">${esc(ZONES[k].city)} — ${esc(rowLabel(k))}</option>`).join("");
+  $("chips").innerHTML=zoneOrder().map(k=>k===state.base
+    ?`<span class="chip base">${esc(rowLabel(k))} · your location</span>`
+    :`<span class="chip">${esc(rowLabel(k))}<button class="x" type="button" data-rmzone="${k}" aria-label="Remove ${esc(rowLabel(k))}">×</button></span>`).join("");
+}
+
+function renderGrid(){
+  const cols=state.cols, baseAbbr=rowLabel(state.base);
+  let h=`<thead><tr><th class="rowlbl">Meeting</th>`+cols.map((c,i)=>`<th data-col="${i}"><span class="colhead"><button class="grip" type="button" data-drag="col" data-i="${i}" aria-label="Move meeting ${i+1} (drag or use left/right arrow keys)">⋮⋮</button>Meeting ${i+1}${cols.length>1?`<button class="del" type="button" data-rmcol="${i}" aria-label="Delete meeting ${i+1}" title="Delete meeting ${i+1}"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M6 1.5h4l.5 1H14v1.5H2V2.5h3.5zM3.2 5h9.6l-.7 9.1a1 1 0 0 1-1 .9H4.9a1 1 0 0 1-1-.9zm3 1.8v6.2h1.1V6.8zm2.5 0v6.2h1.1V6.8z"/></svg>Delete</button>`:""}</span></th>`).join("")+`</tr></thead><tbody>`;
+  h+=`<tr class="in"><td class="rowlbl">Date</td>`+cols.map((c,i)=>`<td><input type="date" id="d${i}" data-i="${i}" data-f="date" value="${esc(c.date)}"></td>`).join("")+`</tr>`;
+  h+=`<tr class="in"><td class="rowlbl">Start time (${esc(ZONES[state.base].std===ZONES[state.base].dst?ZONES[state.base].std:baseAbbr)}) 24H</td>`+cols.map((c,i)=>`<td><input id="s${i}" inputmode="numeric" data-i="${i}" data-f="start" value="${esc(c.start)}" class="${parseStart(c.start)?"":"bad"}" aria-label="Start time meeting ${i+1}"></td>`).join("")+`</tr>`;
+  h+=`<tr class="in"><td class="rowlbl">Duration (mins)</td>`+cols.map((c,i)=>`<td><input id="u${i}" type="number" min="5" step="5" data-i="${i}" data-f="dur" value="${esc(c.dur)}" class="${parseInt(c.dur,10)>0?"":"bad"}" aria-label="Duration meeting ${i+1}"></td>`).join("")+`</tr>`;
+  h+=`<tr class="sep"><td colspan="${cols.length+1}"></td></tr>`;
+  h+=`<tbody id="out"></tbody>`;
+  $("grid").innerHTML=h;
+  renderOut();
+}
+function renderOut(){
+  const res=state.cols.map(compute);
+  let h=`<tr class="date"><td class="rowlbl">Date</td>`+res.map(r=>`<td>${r?esc(r.heading):"—"}</td>`).join("")+`</tr>`;
+  for(const k of zoneOrder()){
+    h+=`<tr data-k="${k}" class="zone ${k===state.base?"base":""}"><td class="rowlbl"><button class="grip" type="button" data-drag="row" data-k="${k}" aria-label="Move ${esc(rowLabel(k))} (drag or use up/down arrow keys)">⋮⋮</button>${esc(rowLabel(k))}</td>`+res.map(r=>r?`<td class="out ${r.rows[k].cls}" title="${{office:"Office hours",edge:"Early / late",night:"Overnight"}[r.rows[k].cls]}">${esc(r.rows[k].time)}${r.rows[k].tag?`<span class="tag">${esc(r.rows[k].tag)}</span>`:""}</td>`:`<td class="out">—</td>`).join("")+`</tr>`;
+  }
+  $("out").innerHTML=h;
+}
+function renderAll(){ renderSelects(); renderGrid(); save(); }
+
+/* ---- events ---- */
+$("grid").addEventListener("change",e=>{
+  const t=e.target; if(t.dataset&&t.dataset.f==="start"){ const v=fmtStart(t.value); if(v!==t.value){ t.value=v; state.cols[+t.dataset.i].start=v; save(); } }
+});
+$("grid").addEventListener("input",e=>{
+  const t=e.target; if(!t.dataset||t.dataset.f===undefined) return;
+  state.cols[+t.dataset.i][t.dataset.f]=t.value;
+  if(t.dataset.f==="start") t.classList.toggle("bad",!parseStart(t.value));
+  if(t.dataset.f==="dur") t.classList.toggle("bad",!(parseInt(t.value,10)>0));
+  renderOut(); save();
+});
+$("grid").addEventListener("click",e=>{
+  const b=e.target.closest("[data-rmcol]"); if(!b) return;
+  const i=+b.dataset.rmcol, removed=state.cols.splice(i,1)[0]; renderAll();
+  toast(`Meeting ${i+1} deleted.`,()=>{ state.cols.splice(Math.min(i,state.cols.length),0,removed); renderAll(); toast("Meeting restored."); });
+});
+$("addCol").addEventListener("click",()=>{
+  const last=state.cols[state.cols.length-1]||{date:"",start:"0900",dur:"30"};
+  state.cols.push({date:nextWorkingDay(state.base),start:last.start,dur:last.dur}); renderAll();
+  const i=state.cols.length-1; const el=$("d"+i); if(el) el.focus();
+});
+$("loc").addEventListener("change",e=>{
+  state.base=e.target.value; if(!state.zones.includes(state.base)) state.zones.unshift(state.base); renderAll();
+});
+$("addZone").addEventListener("change",e=>{ if(e.target.value){ state.zones.push(e.target.value); renderAll(); } });
+$("chips").addEventListener("click",e=>{
+  const b=e.target.closest("[data-rmzone]"); if(!b) return;
+  state.zones=state.zones.filter(k=>k!==b.dataset.rmzone); renderAll();
+});
+
+/* ---- drag to reorder ---- */
+let drag=null;
+function moveItem(arr,from,to){ const [x]=arr.splice(from,1); arr.splice(to,0,x); }
+function markMoving(){
+  document.querySelectorAll(".moving").forEach(el=>el.classList.remove("moving"));
+  if(!drag) return;
+  if(drag.type==="row"){ const tr=document.querySelector(`#out tr[data-k="${drag.key}"]`); if(tr) tr.classList.add("moving"); }
+  else { const i=drag.index+2; document.querySelectorAll(`#grid tr > :nth-child(${i})`).forEach(c=>c.classList.add("moving")); }
+}
+function moveRow(key,to){
+  const order=zoneOrder(), from=order.indexOf(key);
+  to=Math.max(0,Math.min(order.length-1,to)); if(from===to||from<0) return false;
+  moveItem(order,from,to); state.zones=order; renderSelects(); renderOut(); save(); return true;
+}
+function moveCol(from,to){
+  to=Math.max(0,Math.min(state.cols.length-1,to)); if(from===to) return false;
+  moveItem(state.cols,from,to); renderGrid(); save(); return true;
+}
+$("grid").addEventListener("pointerdown",e=>{
+  const g=e.target.closest(".grip"); if(!g||e.button>0) return;
+  e.preventDefault();
+  drag=g.dataset.drag==="row"?{type:"row",key:g.dataset.k}:{type:"col",index:+g.dataset.i};
+  document.body.classList.add("dragging"); markMoving();
+});
+document.addEventListener("pointermove",e=>{
+  if(!drag) return;
+  if(drag.type==="row"){
+    const rows=[...document.querySelectorAll("#out tr.zone")];
+    let to=rows.filter(r=>{const b=r.getBoundingClientRect(); return b.top+b.height/2<e.clientY;}).length;
+    const from=zoneOrder().indexOf(drag.key); if(to>from) to--;
+    if(moveRow(drag.key,to)) markMoving();
+  } else {
+    const ths=[...document.querySelectorAll("#grid thead th[data-col]")];
+    let to=ths.filter(t=>{const b=t.getBoundingClientRect(); return b.left+b.width/2<e.clientX;}).length;
+    if(to>drag.index) to--;
+    if(moveCol(drag.index,to)){ drag.index=Math.max(0,Math.min(state.cols.length-1,to)); markMoving(); }
+  }
+});
+function endDrag(){ if(!drag) return; drag=null; document.body.classList.remove("dragging"); markMoving(); }
+document.addEventListener("pointerup",endDrag);
+document.addEventListener("pointercancel",endDrag);
+$("grid").addEventListener("keydown",e=>{
+  const g=e.target.closest(".grip"); if(!g) return;
+  if(g.dataset.drag==="row"&&(e.key==="ArrowUp"||e.key==="ArrowDown")){
+    e.preventDefault(); const k=g.dataset.k, i=zoneOrder().indexOf(k);
+    moveRow(k,i+(e.key==="ArrowUp"?-1:1)); const n=document.querySelector(`.grip[data-k="${k}"]`); if(n) n.focus();
+  }
+  if(g.dataset.drag==="col"&&(e.key==="ArrowLeft"||e.key==="ArrowRight")){
+    e.preventDefault(); const i=+g.dataset.i, to=Math.max(0,Math.min(state.cols.length-1,i+(e.key==="ArrowLeft"?-1:1)));
+    moveCol(i,to); const n=document.querySelector(`.grip[data-drag="col"][data-i="${to}"]`); if(n) n.focus();
+  }
+});
+
+/* ---- copy ---- */
+function buildCopy(){
+  const res=state.cols.map(compute);
+  const rows=[["Date",...res.map(r=>r?r.heading:"")]];
+  for(const k of zoneOrder()) rows.push([rowLabel(k),...res.map(r=>r?r.rows[k].time+r.rows[k].tag:"")]);
+  const tsv=rows.map(r=>r.join("\t")).join("\r\n");
+  const td=(v,b,left)=>`<td style="border:1px solid #bfbfbf;padding:2px 6px;text-align:${left?"left":"center"};${b?"font-weight:bold;":""}font-family:'Times New Roman';">${esc(v)}</td>`;
+  const html=`<table style="border-collapse:collapse">`+rows.map((r,ri)=>`<tr>`+r.map((v,ci)=>td(v,ri===0&&ci>0,ci===0)).join("")+`</tr>`).join("")+`</table>`;
+  return {tsv,html};
+}
+function toast(msg,undo){
+  const el=$("toast"); el.textContent=msg; clearTimeout(toast.t);
+  if(undo){ const b=document.createElement("button"); b.type="button"; b.className="undo"; b.textContent="Undo";
+    b.onclick=()=>{ clearTimeout(toast.t); el.textContent=""; undo(); }; el.append(" ",b); }
+  toast.t=setTimeout(()=>el.textContent="",undo?8000:3500);
+}
+$("copy").addEventListener("click",async()=>{
+  const {tsv,html}=buildCopy();
+  $("fallback").hidden=true;
+  try{
+    if(window.ClipboardItem){
+      await navigator.clipboard.write([new ClipboardItem({"text/plain":new Blob([tsv],{type:"text/plain"}),"text/html":new Blob([html],{type:"text/html"})})]);
+    } else { await navigator.clipboard.writeText(tsv); }
+    toast("Copied. Click a cell in Excel and paste (Ctrl+V).");
+  }catch(err){
+    try{ await navigator.clipboard.writeText(tsv); toast("Copied. Click a cell in Excel and paste (Ctrl+V)."); }
+    catch(e2){
+      const f=$("fallback"); f.value=tsv; f.hidden=false; f.focus(); f.select();
+      toast("Press Ctrl+C (or Cmd+C) to copy the selected text, then paste into Excel.");
+    }
+  }
+});
+
+renderAll();
+</script>
+
+</body>
+</html>
