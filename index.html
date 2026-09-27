@@ -4,89 +4,101 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Meeting Time Converter</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 [hidden]{display:none!important}
 body{margin:0}
 :root{
-  --bg:#F2F4F7; --surface:#FFFFFF; --ink:#16233A; --muted:#5A6678; --line:#D8DEE7; --line-strong:#B9C3D1;
-  --accent:#1F4E8C; --accent-ink:#FFFFFF; --input:#FFF3B8; --input-line:#E2C94A; --input-ink:#8A1C1C;
-  --head:#E8EDF4; --ok:#1E7A4F; --err:#B42318; --err-bg:#FDECEA;
-  --good:#DDF3E6; --good-ink:#14532D; --warn:#FDEBD0; --warn-ink:#7A3E00; --bad:#FADADD; --bad-ink:#8A1C1C; --drop:#1F4E8C;
-  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --bg:#F5F5F7; --surface:#FFFFFF; --ink:#1D1D1F; --muted:#6E6E73; --line:rgba(60,60,67,.14); --fill:#F2F2F7; --fill-hover:#E8E8ED;
+  --accent:#0071E3; --accent-hover:#0077ED; --accent-ink:#FFFFFF; --accent-soft:rgba(0,113,227,.10);
+  --ok:#248A3D; --err:#D70015; --err-bg:rgba(255,59,48,.10);
+  --good:rgba(52,199,89,.14); --good-ink:#1B7A34; --warn:rgba(255,149,0,.16); --warn-ink:#9A5500; --bad:rgba(255,59,48,.12); --bad-ink:#C0231A;
+  --dot-good:#34C759; --dot-warn:#FF9500; --dot-bad:#FF3B30; --drop:#0071E3;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 10px 30px rgba(0,0,0,.05);
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
+  --chev:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%236E6E73' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme:dark;
-    --bg:#0F1623; --surface:#172131; --ink:#E6ECF5; --muted:#9AA7BA; --line:#2A374B; --line-strong:#3A4A62;
-    --accent:#7FB0F0; --accent-ink:#0F1623; --input:#3A3413; --input-line:#8F7B24; --input-ink:#FFD9A0;
-    --head:#1E2A3D; --ok:#5CCB94; --err:#FF8A80; --err-bg:#3A1B1B;
-    --good:#15392A; --good-ink:#9BE5BD; --warn:#3D2C12; --warn-ink:#FFCB8A; --bad:#43191E; --bad-ink:#FFA3A3; --drop:#7FB0F0;
+    --bg:#000000; --surface:#1C1C1E; --ink:#F5F5F7; --muted:#98989D; --line:rgba(84,84,88,.55); --fill:#2C2C2E; --fill-hover:#3A3A3C;
+    --accent:#2997FF; --accent-hover:#47A6FF; --accent-ink:#FFFFFF; --accent-soft:rgba(41,151,255,.16);
+    --ok:#30D158; --err:#FF453A; --err-bg:rgba(255,69,58,.16);
+    --good:rgba(48,209,88,.16); --good-ink:#5EE07F; --warn:rgba(255,159,10,.18); --warn-ink:#FFB340; --bad:rgba(255,69,58,.18); --bad-ink:#FF6961;
+    --dot-good:#30D158; --dot-warn:#FF9F0A; --dot-bad:#FF453A; --drop:#2997FF;
+    --shadow:0 0 0 1px rgba(255,255,255,.04);
   }
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
-  --bg:#0F1623; --surface:#172131; --ink:#E6ECF5; --muted:#9AA7BA; --line:#2A374B; --line-strong:#3A4A62;
-  --accent:#7FB0F0; --accent-ink:#0F1623; --input:#3A3413; --input-line:#8F7B24; --input-ink:#FFD9A0;
-  --head:#1E2A3D; --ok:#5CCB94; --err:#FF8A80; --err-bg:#3A1B1B;
-    --good:#15392A; --good-ink:#9BE5BD; --warn:#3D2C12; --warn-ink:#FFCB8A; --bad:#43191E; --bad-ink:#FFA3A3; --drop:#7FB0F0;
+  --bg:#000000; --surface:#1C1C1E; --ink:#F5F5F7; --muted:#98989D; --line:rgba(84,84,88,.55); --fill:#2C2C2E; --fill-hover:#3A3A3C;
+  --accent:#2997FF; --accent-hover:#47A6FF; --accent-ink:#FFFFFF; --accent-soft:rgba(41,151,255,.16);
+  --ok:#30D158; --err:#FF453A; --err-bg:rgba(255,69,58,.16);
+  --good:rgba(48,209,88,.16); --good-ink:#5EE07F; --warn:rgba(255,159,10,.18); --warn-ink:#FFB340; --bad:rgba(255,69,58,.18); --bad-ink:#FF6961;
+  --dot-good:#30D158; --dot-warn:#FF9F0A; --dot-bad:#FF453A; --drop:#2997FF;
+  --shadow:0 0 0 1px rgba(255,255,255,.04);
 }
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.45;padding:28px 16px 48px}
-.wrap{max-width:1080px;margin:0 auto;display:grid;gap:20px}
-h1{font-size:1.6rem;margin:0;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
-.sub{margin:4px 0 0;color:var(--muted);max-width:62ch}
-.bar{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:end;justify-content:space-between}
-.field{display:grid;gap:4px}
-label,.lbl{font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-select,input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:6px;padding:7px 10px}
-select:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.47;letter-spacing:-.01em;padding:48px 16px 64px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;display:grid;gap:28px}
+header{display:grid;gap:8px}
+.eyebrow{font-size:.95rem;font-weight:600;color:var(--accent);letter-spacing:-.01em}
+h1{font-size:clamp(2rem,4.5vw,3rem);line-height:1.08;margin:0;font-weight:700;letter-spacing:-.03em;text-wrap:balance}
+.sub{margin:0;color:var(--muted);font-size:1.12rem;line-height:1.45;max-width:60ch}
+.bar{display:flex;flex-wrap:wrap;gap:14px 16px;align-items:end;justify-content:space-between}
+.field{display:grid;gap:6px}
+label,.lbl{font-size:.8rem;font-weight:500;color:var(--muted);letter-spacing:0}
+.lbl{font-size:1.05rem;font-weight:600;color:var(--ink);letter-spacing:-.02em}
+select,input{font:inherit;color:var(--ink);background:var(--fill);border:1px solid transparent;border-radius:10px;padding:9px 12px;transition:background .15s,box-shadow .15s}
+select{appearance:none;-webkit-appearance:none;padding-right:34px;background-image:var(--chev);background-repeat:no-repeat;background-position:right 12px center;cursor:pointer}
+select:hover,input:hover{background-color:var(--fill-hover)}
+select:focus-visible,input:focus-visible,button:focus-visible{outline:none;box-shadow:0 0 0 4px var(--accent-soft),0 0 0 1px var(--accent)}
 .actions{display:flex;gap:10px;flex-wrap:wrap}
-button{font:inherit;font-weight:600;cursor:pointer;border-radius:6px;padding:8px 14px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink)}
-button:hover{border-color:var(--accent)}
-button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px}
-.scroll{overflow-x:auto}
-table{border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:100%}
-th,td{border:1px solid var(--line);padding:6px 10px;text-align:center;white-space:nowrap}
-th.rowlbl,td.rowlbl{text-align:left;font-weight:500;color:var(--ink);background:var(--head);position:sticky;left:0;z-index:1}
-tr.in td{background:var(--input);border-color:var(--input-line);padding:4px 6px}
-tr.in td.rowlbl{background:var(--head);border-color:var(--line)}
-tr.in input{width:100%;min-width:118px;text-align:center;background:transparent;border:1px solid transparent;color:var(--input-ink);font-family:var(--mono);font-weight:600}
-tr.in input:hover{border-color:var(--input-line)}
-tr.in input.bad{background:var(--err-bg);border-color:var(--err);color:var(--err)}
-thead th{background:var(--head);font-size:.8rem;color:var(--muted);font-weight:600}
-.colhead{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--ink)}
-.x{border:none;background:none;padding:0 4px;color:var(--muted);font-size:1rem;line-height:1}
-.x:hover{color:var(--err)}
-.del{display:inline-flex;align-items:center;gap:4px;border:1px solid transparent;background:none;padding:2px 8px;border-radius:999px;font-size:.78rem;font-weight:500;color:var(--muted)}
-.del:hover{color:var(--err);border-color:var(--err);background:var(--err-bg)}
-.undo{padding:2px 10px;margin-left:6px;font-size:.85rem}
-tr.sep td{padding:0;height:6px;background:var(--bg);border-left:none;border-right:none}
-tr.date td{font-weight:700}
-td.out{font-family:var(--mono);font-size:.92rem}
-td.out .tag{color:var(--muted);font-family:var(--sans);font-size:.8rem}
-tr.base td.out{font-weight:600}
-.grip{border:none;background:none;padding:2px 4px;margin-right:6px;color:var(--muted);cursor:grab;touch-action:none;font-size:.9rem;letter-spacing:-2px;line-height:1;border-radius:4px}
-.grip:hover{color:var(--accent);background:var(--surface)}
+button{font:inherit;font-weight:500;cursor:pointer;border-radius:980px;padding:9px 20px;border:none;background:var(--fill);color:var(--accent);transition:background .15s,color .15s}
+button:hover{background:var(--fill-hover)}
+button.primary{background:var(--accent);color:var(--accent-ink)}
+button.primary:hover{background:var(--accent-hover)}
+.panel{background:var(--surface);border-radius:20px;padding:24px;display:grid;gap:16px;box-shadow:var(--shadow)}
+.scroll{overflow-x:auto;margin:-6px}
+table{border-collapse:separate;border-spacing:6px;font-variant-numeric:tabular-nums;min-width:100%}
+th,td{padding:8px 12px;text-align:center;white-space:nowrap;border:none}
+th.rowlbl,td.rowlbl{text-align:left;font-weight:500;color:var(--ink);background:var(--surface);position:sticky;left:0;z-index:1;padding-left:4px}
+thead th{font-size:.85rem;font-weight:600;color:var(--ink);padding-bottom:2px}
+thead th.rowlbl{color:var(--muted);font-weight:500}
+tr.in td{padding:0}
+tr.in td.rowlbl{padding:8px 12px 8px 4px;color:var(--muted);font-weight:400}
+tr.in input{width:100%;min-width:130px;text-align:center;font-weight:500;font-size:1rem}
+tr.in input.bad{background:var(--err-bg);color:var(--err)}
+.colhead{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--ink)}
+.x{border:none;background:none;padding:0 4px;color:var(--muted);font-size:1rem;line-height:1;border-radius:50%}
+.x:hover{color:var(--err);background:var(--err-bg)}
+.del{display:inline-flex;align-items:center;gap:4px;background:none;padding:3px 9px;font-size:.78rem;font-weight:500;color:var(--muted)}
+.del:hover{color:var(--err);background:var(--err-bg)}
+.undo{padding:4px 12px;margin-left:8px;font-size:.85rem}
+tr.sep td{padding:0;height:4px;background:none}
+tr.sep td::after{content:"";display:block;height:1px;background:var(--line)}
+tr.date td{font-weight:600;font-size:.95rem;padding-top:4px;padding-bottom:4px}
+tr.date td.rowlbl{color:var(--muted);font-weight:400}
+td.out{font-size:.95rem;font-weight:500;border-radius:10px;background:var(--fill)}
+tr.base td.out{font-weight:650}
+.grip{background:none;padding:2px 5px;margin-right:6px;color:var(--muted);cursor:grab;touch-action:none;font-size:.85rem;letter-spacing:-2px;line-height:1;border-radius:6px;opacity:.7}
+.grip:hover{color:var(--accent);background:var(--accent-soft);opacity:1}
 body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
-tr.moving td,th.moving,td.moving{outline:2px dashed var(--drop);outline-offset:-2px}
+tr.moving td,th.moving,td.moving{box-shadow:0 0 0 2px var(--drop) inset}
 td.out.office{background:var(--good);color:var(--good-ink)}
 td.out.edge{background:var(--warn);color:var(--warn-ink)}
 td.out.night{background:var(--bad);color:var(--bad-ink)}
-td.out .tag{color:inherit;opacity:.75}
-.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.85rem;color:var(--muted);align-items:center}
-.sw{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid var(--line)}
-.sw.office{background:var(--good)} .sw.edge{background:var(--warn)} .sw.night{background:var(--bad)}
-.hint{font-size:.85rem;color:var(--muted)}
+td.out .tag{color:inherit;opacity:.8;font-weight:400;font-size:.82rem}
+.legend{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:.85rem;color:var(--muted);align-items:center}
+.sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:1px}
+.sw.office{background:var(--dot-good)} .sw.edge{background:var(--dot-warn)} .sw.night{background:var(--dot-bad)}
+.hint{font-size:.85rem;color:var(--muted);margin:0;max-width:80ch}
+.hint code{font-family:inherit;background:var(--fill);padding:1px 6px;border-radius:6px;color:var(--ink)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);border-radius:999px;padding:4px 6px 4px 12px;font-size:.88rem;background:var(--surface)}
-.chip.base{background:var(--head);padding-right:12px}
-.toast{min-height:1.3em;font-size:.88rem;color:var(--ok);font-weight:600}
-textarea.fallback{width:100%;height:120px;font-family:var(--mono);font-size:.8rem;background:var(--surface);color:var(--ink);border:1px solid var(--line-strong);border-radius:6px;padding:8px}
-@media (max-width:560px){ h1{font-size:1.35rem} .bar{align-items:stretch} .actions{width:100%} .actions button{flex:1} }
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:980px;padding:6px 6px 6px 14px;font-size:.9rem;background:var(--fill)}
+.chip.base{background:var(--accent-soft);color:var(--accent);padding-right:14px;font-weight:500}
+.toast{min-height:1.4em;font-size:.9rem;color:var(--ok);font-weight:500}
+textarea.fallback{width:100%;height:120px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.8rem;background:var(--fill);color:var(--ink);border:none;border-radius:12px;padding:12px}
+@media (max-width:560px){ body{padding-top:32px} .panel{padding:16px;border-radius:16px} .bar{align-items:stretch} .actions{width:100%} .actions button{flex:1} }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -95,8 +107,9 @@ textarea.fallback{width:100%;height:120px;font-family:var(--mono);font-size:.8re
 
 <div class="wrap">
   <header>
+    <span class="eyebrow">For HK · Tokyo · Sydney · London · US</span>
     <h1>Meeting Time Converter</h1>
-    <p class="sub">Type the date, start time and duration in the yellow cells. The time zone rows update by themselves, with daylight saving handled. Then press <b>Copy for Excel</b> and paste into any cell.</p>
+    <p class="sub">Set the date, start time and duration. Every time zone updates instantly, with daylight saving handled. Then copy the table straight into Excel.</p>
   </header>
 
   <div class="bar">
@@ -115,13 +128,13 @@ textarea.fallback{width:100%;height:120px;font-family:var(--mono);font-size:.8re
     <div class="legend"><span><span class="sw office"></span>Office hours (0800–1800)</span><span><span class="sw edge"></span>Early / late</span><span><span class="sw night"></span>Overnight (2200–0700)</span></div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <textarea class="fallback" id="fallback" hidden readonly aria-label="Copy this text"></textarea>
-    <p class="hint">Start time: 24H format, e.g. <code>800</code>, <code>0930</code> or <code>14:00</code>. “(prev day)” / “(next day)” is compared with the date in your location. Drag <b>⋮⋮</b> to move a time zone row up/down or a meeting column left/right (or focus it and use the arrow keys).</p>
+    <p class="hint">Start time uses 24H format, e.g. <code>0800</code>, <code>0930</code> or <code>14:00</code>. “(prev day)” / “(next day)” is compared with the date in your location. Drag <b>⋮⋮</b> to move a time zone up or down, or a meeting left or right (or click it and use the arrow keys).</p>
   </section>
 
   <section class="panel">
-    <span class="lbl">Time zones shown</span>
+    <span class="lbl">Time zones</span>
     <div class="chips" id="chips"></div>
-    <div class="field" style="max-width:320px">
+    <div class="field" style="max-width:340px">
       <label for="addZone">Add a time zone</label>
       <select id="addZone"></select>
     </div>
