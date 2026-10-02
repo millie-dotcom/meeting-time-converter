@@ -3,141 +3,178 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Meeting Time Converter</title>
+<title>Global Meeting Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
 [hidden]{display:none!important}
 body{margin:0}
 :root{
-  --bg:#F5F5F7; --surface:#FFFFFF; --ink:#1D1D1F; --muted:#6E6E73; --line:rgba(60,60,67,.14); --fill:#F2F2F7; --fill-hover:#E8E8ED;
-  --accent:#0071E3; --accent-hover:#0077ED; --accent-ink:#FFFFFF; --accent-soft:rgba(0,113,227,.10);
-  --ok:#248A3D; --err:#D70015; --err-bg:rgba(255,59,48,.10);
-  --good:rgba(52,199,89,.14); --good-ink:#1B7A34; --warn:rgba(255,149,0,.16); --warn-ink:#9A5500; --bad:rgba(255,59,48,.12); --bad-ink:#C0231A;
-  --dot-good:#34C759; --dot-warn:#FF9500; --dot-bad:#FF3B30; --drop:#0071E3;
-  --shadow:0 1px 2px rgba(0,0,0,.04),0 10px 30px rgba(0,0,0,.05);
-  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
-  --chev:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%236E6E73' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --bg:#F6F7F9; --surface:#FFFFFF; --ink:#1F2430; --muted:#6B7280; --line:#E6E8EE; --fill:#F3F4F7; --fill-hover:#E9EBF0;
+  --accent:#4F46BA; --accent-hover:#433BA6; --accent-ink:#FFFFFF; --accent-soft:#ECEBFB;
+  --in-bg:#F1F0FD; --in-line:#CFCBF3; --in-ink:#3F37A0; --in-focus:#8B83E0;
+  --ok:#2F7A52; --err:#C0283B; --err-bg:#FDE8EA;
+  --good:#E5F4EC; --good-ink:#23694A; --warn:#FDF0E0; --warn-ink:#935316; --bad:#FDE6E6; --bad-ink:#B0323A;
+  --dot-good:#5DBB8A; --dot-warn:#F0A95B; --dot-bad:#E57373; --drop:#4F46BA;
+  --shadow:0 1px 2px rgba(20,24,40,.04),0 8px 24px rgba(20,24,40,.05);
+  --sans:"Plus Jakarta Sans","Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --display:"Plus Jakarta Sans","Segoe UI",-apple-system,BlinkMacSystemFont,Arial,sans-serif;
+  --chev:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%234F46BA' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme:dark;
-    --bg:#000000; --surface:#1C1C1E; --ink:#F5F5F7; --muted:#98989D; --line:rgba(84,84,88,.55); --fill:#2C2C2E; --fill-hover:#3A3A3C;
-    --accent:#2997FF; --accent-hover:#47A6FF; --accent-ink:#FFFFFF; --accent-soft:rgba(41,151,255,.16);
-    --ok:#30D158; --err:#FF453A; --err-bg:rgba(255,69,58,.16);
-    --good:rgba(48,209,88,.16); --good-ink:#5EE07F; --warn:rgba(255,159,10,.18); --warn-ink:#FFB340; --bad:rgba(255,69,58,.18); --bad-ink:#FF6961;
-    --dot-good:#30D158; --dot-warn:#FF9F0A; --dot-bad:#FF453A; --drop:#2997FF;
+    --bg:#111318; --surface:#1A1D24; --ink:#EEF0F5; --muted:#A0A6B4; --line:#2C303A; --fill:#232730; --fill-hover:#2C313C;
+    --accent:#9D97F5; --accent-hover:#B0ABF8; --accent-ink:#15172A; --accent-soft:#2A2850;
+    --in-bg:#24223F; --in-line:#4A4590; --in-ink:#CFCBFF; --in-focus:#A39DF7;
+    --ok:#7FD4A6; --err:#FF8A96; --err-bg:#45212A;
+    --good:#1C3A2C; --good-ink:#9BE0B9; --warn:#3F2F1A; --warn-ink:#F5C089; --bad:#46232A; --bad-ink:#FF9EA5;
+    --dot-good:#5DBB8A; --dot-warn:#F0A95B; --dot-bad:#E57373; --drop:#9D97F5;
     --shadow:0 0 0 1px rgba(255,255,255,.04);
   }
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
-  --bg:#000000; --surface:#1C1C1E; --ink:#F5F5F7; --muted:#98989D; --line:rgba(84,84,88,.55); --fill:#2C2C2E; --fill-hover:#3A3A3C;
-  --accent:#2997FF; --accent-hover:#47A6FF; --accent-ink:#FFFFFF; --accent-soft:rgba(41,151,255,.16);
-  --ok:#30D158; --err:#FF453A; --err-bg:rgba(255,69,58,.16);
-  --good:rgba(48,209,88,.16); --good-ink:#5EE07F; --warn:rgba(255,159,10,.18); --warn-ink:#FFB340; --bad:rgba(255,69,58,.18); --bad-ink:#FF6961;
-  --dot-good:#30D158; --dot-warn:#FF9F0A; --dot-bad:#FF453A; --drop:#2997FF;
+  --bg:#111318; --surface:#1A1D24; --ink:#EEF0F5; --muted:#A0A6B4; --line:#2C303A; --fill:#232730; --fill-hover:#2C313C;
+  --accent:#9D97F5; --accent-hover:#B0ABF8; --accent-ink:#15172A; --accent-soft:#2A2850;
+  --in-bg:#24223F; --in-line:#4A4590; --in-ink:#CFCBFF; --in-focus:#A39DF7;
+  --ok:#7FD4A6; --err:#FF8A96; --err-bg:#45212A;
+  --good:#1C3A2C; --good-ink:#9BE0B9; --warn:#3F2F1A; --warn-ink:#F5C089; --bad:#46232A; --bad-ink:#FF9EA5;
+  --dot-good:#5DBB8A; --dot-warn:#F0A95B; --dot-bad:#E57373; --drop:#9D97F5;
   --shadow:0 0 0 1px rgba(255,255,255,.04);
 }
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.47;letter-spacing:-.01em;padding:48px 16px 64px;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1080px;margin:0 auto;display:grid;gap:28px}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;padding:44px 16px 64px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;display:grid;gap:26px}
+.wrap>*,.panel>*{min-width:0}
 header{display:grid;gap:8px}
-.eyebrow{font-size:.95rem;font-weight:600;color:var(--accent);letter-spacing:-.01em}
-h1{font-size:clamp(2rem,4.5vw,3rem);line-height:1.08;margin:0;font-weight:700;letter-spacing:-.03em;text-wrap:balance}
-.sub{margin:0;color:var(--muted);font-size:1.12rem;line-height:1.45;max-width:60ch}
+.eyebrow{font-size:.78rem;font-weight:700;color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+h1{font-family:var(--display);font-size:clamp(2rem,4.5vw,2.8rem);line-height:1.1;margin:0;font-weight:800;letter-spacing:-.03em;text-wrap:balance}
+.sub{margin:0;color:var(--muted);font-size:1.05rem;max-width:60ch}
 .bar{display:flex;flex-wrap:wrap;gap:14px 16px;align-items:end;justify-content:space-between}
 .field{display:grid;gap:6px}
-label,.lbl{font-size:.8rem;font-weight:500;color:var(--muted);letter-spacing:0}
-.lbl{font-size:1.05rem;font-weight:600;color:var(--ink);letter-spacing:-.02em}
-select,input{font:inherit;color:var(--ink);background:var(--fill);border:1px solid transparent;border-radius:10px;padding:9px 12px;transition:background .15s,box-shadow .15s}
+label{font-size:.82rem;font-weight:600;color:var(--muted)}
+.lbl{font-family:var(--display);font-size:1.1rem;font-weight:700;color:var(--ink)}
+select,input{font:inherit;color:var(--ink);background:var(--fill);border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;transition:background .15s,border-color .15s,box-shadow .15s}
 select{appearance:none;-webkit-appearance:none;padding-right:34px;background-image:var(--chev);background-repeat:no-repeat;background-position:right 12px center;cursor:pointer}
-select:hover,input:hover{background-color:var(--fill-hover)}
-select:focus-visible,input:focus-visible,button:focus-visible{outline:none;box-shadow:0 0 0 4px var(--accent-soft),0 0 0 1px var(--accent)}
+#loc{background-color:var(--in-bg);border-color:var(--in-line);color:var(--in-ink);font-weight:600;min-width:min(300px,100%)}
+select:hover{background-color:var(--fill-hover)}
+#loc:hover{border-color:var(--in-focus)}
+select:focus-visible,input:focus-visible,button:focus-visible{outline:none;box-shadow:0 0 0 4px var(--accent-soft);border-color:var(--accent)}
 .actions{display:flex;gap:10px;flex-wrap:wrap}
-button{font:inherit;font-weight:500;cursor:pointer;border-radius:980px;padding:9px 20px;border:none;background:var(--fill);color:var(--accent);transition:background .15s,color .15s}
-button:hover{background:var(--fill-hover)}
-button.primary{background:var(--accent);color:var(--accent-ink)}
+button{font:inherit;font-weight:700;cursor:pointer;border-radius:999px;padding:10px 20px;border:1.5px solid var(--accent-soft);background:var(--surface);color:var(--accent);transition:background .15s,color .15s,border-color .15s}
+button:hover{background:var(--accent-soft)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);box-shadow:0 4px 12px rgba(79,70,186,.22)}
 button.primary:hover{background:var(--accent-hover)}
-.panel{background:var(--surface);border-radius:20px;padding:24px;display:grid;gap:16px;box-shadow:var(--shadow)}
+.panel{background:var(--surface);border-radius:22px;padding:24px;display:grid;gap:16px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.fillnote{display:flex;align-items:center;gap:8px;font-size:.88rem;color:var(--in-ink);font-weight:600}
+.fillnote .sample{background:var(--in-bg);border:1.5px solid var(--in-line);color:var(--in-ink);border-radius:8px;padding:2px 9px}
+.issues{display:grid;gap:6px}
+.issues:empty{display:none}
+.issue{margin:0;padding:8px 12px;border-radius:10px;font-size:.88rem;line-height:1.4}
+.issue.err{background:var(--err-bg);color:var(--err)}
+.issue.note{background:var(--warn);color:var(--warn-ink)}
 .scroll{overflow-x:auto;margin:-6px}
 table{border-collapse:separate;border-spacing:6px;font-variant-numeric:tabular-nums;min-width:100%}
 th,td{padding:8px 12px;text-align:center;white-space:nowrap;border:none}
-th.rowlbl,td.rowlbl{text-align:left;font-weight:500;color:var(--ink);background:var(--surface);position:sticky;left:0;z-index:1;padding-left:4px}
-thead th{font-size:.85rem;font-weight:600;color:var(--ink);padding-bottom:2px}
-thead th.rowlbl{color:var(--muted);font-weight:500}
+th.rowlbl,td.rowlbl{text-align:left;font-weight:600;color:var(--ink);background:var(--surface);position:sticky;left:0;z-index:1;padding-left:4px}
+thead th{font-size:.9rem;font-weight:700;color:var(--ink);padding-bottom:2px}
 tr.in td{padding:0}
-tr.in td.rowlbl{padding:8px 12px 8px 4px;color:var(--muted);font-weight:400}
-tr.in input{width:100%;min-width:130px;text-align:center;font-weight:500;font-size:1rem}
-tr.in input.bad{background:var(--err-bg);color:var(--err)}
-.colhead{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--ink)}
+tr.in td.rowlbl{padding:8px 12px 8px 4px;color:var(--in-ink)}
+tr.in input{width:100%;min-width:140px;text-align:center;font-weight:700;font-size:1rem;background:var(--in-bg);border-color:var(--in-line);color:var(--in-ink)}
+tr.in input:hover{border-color:var(--in-focus)}
+tr.in input:focus-visible{border-color:var(--in-focus);box-shadow:0 0 0 4px var(--in-bg)}
+tr.in input.bad{background:var(--err-bg);border-color:var(--err);color:var(--err)}
+.colhead{display:flex;align-items:center;justify-content:center;gap:6px}
 .x{border:none;background:none;padding:0 4px;color:var(--muted);font-size:1rem;line-height:1;border-radius:50%}
-.x:hover{color:var(--err);background:var(--err-bg)}
-.del{display:inline-flex;align-items:center;gap:4px;background:none;padding:3px 9px;font-size:.78rem;font-weight:500;color:var(--muted)}
+.del{display:inline-flex;align-items:center;gap:4px;background:none;border:none;padding:3px 9px;font-size:.78rem;font-weight:600;color:var(--muted)}
 .del:hover{color:var(--err);background:var(--err-bg)}
 .undo{padding:4px 12px;margin-left:8px;font-size:.85rem}
-tr.sep td{padding:0;height:4px;background:none}
+tr.sep td{padding:0;height:6px;background:none}
 tr.sep td::after{content:"";display:block;height:1px;background:var(--line)}
-tr.date td{font-weight:600;font-size:.95rem;padding-top:4px;padding-bottom:4px}
-tr.date td.rowlbl{color:var(--muted);font-weight:400}
-td.out{font-size:.95rem;font-weight:500;border-radius:10px;background:var(--fill)}
-tr.base td.out{font-weight:650}
-.grip{background:none;padding:2px 5px;margin-right:6px;color:var(--muted);cursor:grab;touch-action:none;font-size:.85rem;letter-spacing:-2px;line-height:1;border-radius:6px;opacity:.7}
-.grip:hover{color:var(--accent);background:var(--accent-soft);opacity:1}
+tr.date td{font-weight:700;font-size:.95rem;padding-top:4px;padding-bottom:4px}
+tr.date td.rowlbl{color:var(--muted);font-weight:600}
+td.out{font-size:.95rem;font-weight:600;border-radius:12px;background:var(--fill)}
+tr.base td.out{font-weight:800}
+.grip{background:none;border:none;padding:2px 5px;margin-right:6px;color:var(--muted);cursor:grab;touch-action:none;font-size:.85rem;letter-spacing:-2px;line-height:1;border-radius:6px}
+.grip:hover{color:var(--accent);background:var(--accent-soft)}
 body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
 tr.moving td,th.moving,td.moving{box-shadow:0 0 0 2px var(--drop) inset}
 td.out.office{background:var(--good);color:var(--good-ink)}
 td.out.edge{background:var(--warn);color:var(--warn-ink)}
 td.out.night{background:var(--bad);color:var(--bad-ink)}
-td.out .tag{color:inherit;opacity:.8;font-weight:400;font-size:.82rem}
+td.out .tag{color:inherit;opacity:.8;font-weight:500;font-size:.82rem}
 .legend{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:.85rem;color:var(--muted);align-items:center}
-.sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:1px}
+.sw{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:0}
 .sw.office{background:var(--dot-good)} .sw.edge{background:var(--dot-warn)} .sw.night{background:var(--dot-bad)}
 .hint{font-size:.85rem;color:var(--muted);margin:0;max-width:80ch}
-.hint code{font-family:inherit;background:var(--fill);padding:1px 6px;border-radius:6px;color:var(--ink)}
+.hint code{font-family:inherit;font-weight:700;background:var(--in-bg);color:var(--in-ink);padding:1px 7px;border-radius:6px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.chip{display:inline-flex;align-items:center;gap:4px;border-radius:980px;padding:6px 6px 6px 14px;font-size:.9rem;background:var(--fill)}
-.chip.base{background:var(--accent-soft);color:var(--accent);padding-right:14px;font-weight:500}
-.toast{min-height:1.4em;font-size:.9rem;color:var(--ok);font-weight:500}
-textarea.fallback{width:100%;height:120px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.8rem;background:var(--fill);color:var(--ink);border:none;border-radius:12px;padding:12px}
-@media (max-width:560px){ body{padding-top:32px} .panel{padding:16px;border-radius:16px} .bar{align-items:stretch} .actions{width:100%} .actions button{flex:1} }
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:6px 6px 6px 14px;font-size:.9rem;font-weight:600;background:var(--fill);border:1px solid var(--line)}
+.chip .x:hover{color:var(--err);background:var(--err-bg)}
+.chip.base{background:var(--accent-soft);color:var(--accent);padding-right:14px;border-color:transparent}
+#addZone{background-color:var(--in-bg);border-color:var(--in-line);color:var(--in-ink);font-weight:600}
+.toast{min-height:1.4em;font-size:.9rem;color:var(--ok);font-weight:700}
+textarea.fallback{width:100%;height:120px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem;background:var(--fill);color:var(--ink);border:none;border-radius:12px;padding:12px}
+@media (max-width:560px){ body{padding-top:32px} .panel{padding:16px;border-radius:18px} .bar{align-items:stretch} .actions{width:100%} .actions button{flex:1} }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.panel .bar{align-items:center}
+tr.in td.loccell{text-align:left}
+#loc{width:auto;max-width:100%}
+tr.in td.rowlbl label{font:inherit;color:inherit}
+.zones{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:12px 14px;background:var(--fill);border-radius:14px}
+.zlabel{font-size:.85rem;font-weight:700;color:var(--muted);margin-right:4px}
+#addZone{padding-top:6px;padding-bottom:6px;font-size:.9rem;border-radius:999px}
+.chip{background:var(--surface)}
+@media (max-width:560px){
+  table{border-spacing:4px}
+  th,td{padding:7px 8px}
+  th.rowlbl,td.rowlbl{white-space:normal;width:88px;min-width:88px;max-width:88px;font-size:.8rem;line-height:1.25}
+  tr.in td.rowlbl{padding:6px 4px 6px 2px}
+  tr.in input{min-width:112px;font-size:.92rem;padding:8px 6px}
+  tr.in input[type="date"]{min-width:130px}
+  thead th{font-size:.78rem}
+  .colhead{flex-wrap:wrap;gap:2px}
+  td.out{font-size:.85rem}
+  td.out .tag{display:block;font-size:.72rem}
+  .grip{margin-right:2px;padding:2px}
+  #addZone{width:100%}
+  th.rowlbl,td.rowlbl{width:100px;min-width:100px;max-width:100px;font-size:.78rem}
+  tr.zone td.rowlbl{white-space:nowrap}
+  .panel .bar{flex-direction:column;align-items:stretch}
+  .actions button{padding:10px 12px;white-space:nowrap}
+}
+#addZone,#loc{max-width:100%}
 </style>
 </head>
 <body>
 
-
 <div class="wrap">
   <header>
-    <span class="eyebrow">For HK · Tokyo · Sydney · London · US</span>
-    <h1>Meeting Time Converter</h1>
-    <p class="sub">Set the date, start time and duration. Every time zone updates instantly, with daylight saving handled. Then copy the table straight into Excel.</p>
+    <span class="eyebrow">HK · Tokyo · Sydney · London · US</span>
+    <h1>Global Meeting Planner</h1>
+    <p class="sub">Fill in the purple boxes with your location and each proposed date, start time and duration. Every time zone updates instantly, with daylight saving handled. Then copy the table straight into Excel.</p>
   </header>
 
-  <div class="bar">
-    <div class="field">
-      <label for="loc">Your location (start time is in this zone)</label>
-      <select id="loc"></select>
-    </div>
-    <div class="actions">
-      <button id="addCol" type="button">+ Add meeting</button>
-      <button id="copy" class="primary" type="button">Copy for Excel</button>
-    </div>
-  </div>
-
   <section class="panel">
+    <div class="bar">
+      <div class="fillnote"><span class="sample">Purple boxes</span> are for you to fill in</div>
+      <div class="actions">
+        <button id="addCol" type="button">+ Add proposed time</button>
+        <button id="copy" class="primary" type="button">Copy for Excel</button>
+      </div>
+    </div>
     <div class="scroll"><table id="grid"></table></div>
+    <div class="issues" id="issues" role="status" aria-live="polite"></div>
+    <div class="zones">
+      <span class="zlabel">Time zones shown</span>
+      <div class="chips" id="chips"></div>
+      <select id="addZone" aria-label="Add a time zone"></select>
+    </div>
     <div class="legend"><span><span class="sw office"></span>Office hours (0800–1800)</span><span><span class="sw edge"></span>Early / late</span><span><span class="sw night"></span>Overnight (2200–0700)</span></div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <textarea class="fallback" id="fallback" hidden readonly aria-label="Copy this text"></textarea>
-    <p class="hint">Start time uses 24H format, e.g. <code>0800</code>, <code>0930</code> or <code>14:00</code>. “(prev day)” / “(next day)” is compared with the date in your location. Drag <b>⋮⋮</b> to move a time zone up or down, or a meeting left or right (or click it and use the arrow keys).</p>
-  </section>
-
-  <section class="panel">
-    <span class="lbl">Time zones</span>
-    <div class="chips" id="chips"></div>
-    <div class="field" style="max-width:340px">
-      <label for="addZone">Add a time zone</label>
-      <select id="addZone"></select>
-    </div>
+    <p class="hint">Start time: 24H like <code>0930</code> or <code>1430</code> (you can also type <code>8.30</code>, <code>14:00</code> or <code>2:30pm</code>). Duration: whole minutes, up to 1440. “(prev day)” / “(next day)” is compared with the date in your location, and <b>(+1)</b> means the meeting ends the next day. Drag <b>⋮⋮</b> to move a time zone up or down, or a proposed time left or right (or click it and use the arrow keys).</p>
   </section>
 </div>
 
@@ -168,9 +205,9 @@ const DEFAULT = {
   zones:["HKT","JST","AET","UKT","ET"],
   cols:[{date:"",start:"0900",dur:"30"}]
 };
-/* next Mon–Fri after today, in the given location */
-function nextWorkingDay(baseKey){
-  const t=parts(ZONES[baseKey||"HKT"].tz,Date.now());
+/* next Mon–Fri after a given date (or after today in the given location) */
+function nextWorkingDay(baseKey,fromDate){
+  const t=parseDate(fromDate)?{...parseDate(fromDate)}:parts(ZONES[baseKey||"HKT"].tz,Date.now());
   for(let n=1;n<8;n++){
     const d=new Date(Date.UTC(t.y,t.m-1,t.d+n)), w=d.getUTCDay();
     if(w!==0&&w!==6) return d.toISOString().slice(0,10);
@@ -215,12 +252,24 @@ function rowLabel(key){
   return z.std+" ("+utcLabel(offsetMin(z.tz,Date.now()))+")";
 }
 function hhmm(p){ return String(p.h).padStart(2,"0")+String(p.mi).padStart(2,"0"); }
-function parseStart(s){
-  s=String(s||"").trim().replace(/[.:hH]/g,"");
-  if(!/^\d{1,4}$/.test(s)) return null;
-  let h,m;
-  if(s.length<=2){ h=+s; m=0; } else { h=+s.slice(0,-2); m=+s.slice(-2); }
+function parseStart(v){
+  let s=String(v||"").trim().toLowerCase().replace(/\s+/g,"").replace(/\.$/,"");
+  let ap=null; const am=s.match(/^(.*?)(am|pm|a|p)$/); if(am){ ap=am[2][0]; s=am[1]; }
+  let h,m; const sep=s.match(/^(\d{1,2})[.:h](\d{2})$/);
+  if(sep){ h=+sep[1]; m=+sep[2]; }
+  else if(/^\d{1,4}$/.test(s)){ if(s.length<=2){ h=+s; m=0; } else { h=+s.slice(0,-2); m=+s.slice(-2); } }
+  else return null;
+  if(ap){ if(h<1||h>12) return null; if(ap==="p"&&h<12) h+=12; if(ap==="a"&&h===12) h=0; }
   if(h>23||m>59) return null; return {h,m};
+}
+function parseDur(v){ const t=String(v??"").trim(); if(!/^\d+$/.test(t)) return null; const n=+t; return n>=5&&n<=1440?n:null; }
+function startProblem(v){ return String(v||"").trim()===""?"Please enter a start time.":`Start time “${v}” isn’t valid. Use 24H, e.g. 0930 or 1430.`; }
+function durProblem(v){
+  const t=String(v??"").trim();
+  if(t==="") return "Please enter a duration in whole minutes, e.g. 30 or 90.";
+  if(/^\d*\.\d+$/.test(t)) return `Duration “${t}” has a decimal. Please use whole minutes, e.g. 90 for 1.5 hours.`;
+  if(/^\d+$/.test(t)&&+t>1440) return `Duration “${t}” is longer than a day. Please use up to 1440 mins.`;
+  return `Duration “${t}” isn’t valid. Please use whole minutes from 5 to 1440.`;
 }
 function parseDate(s){ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||""); return m?{y:+m[1],m:+m[2],d:+m[3]}:null; }
 function dateHeading(d){
@@ -228,22 +277,31 @@ function dateHeading(d){
   return dt.toLocaleDateString("en-US",{timeZone:"UTC",weekday:"short",month:"short",day:"2-digit"});
 }
 function compute(col){
-  const d=parseDate(col.date), s=parseStart(col.start), dur=parseInt(col.dur,10);
-  if(!d||!s||!(dur>0)) return null;
+  const d=parseDate(col.date), s=parseStart(col.start), dur=parseDur(col.dur);
+  if(!d||!s||!dur) return null;
   const baseTz=ZONES[state.base].tz;
   const startUTC=wallToUTC(baseTz,d.y,d.m,d.d,s.h,s.m), endUTC=startUTC+dur*60000;
   const baseDay=Date.UTC(d.y,d.m-1,d.d);
-  const rows={};
+  const rows={}, bz=ZONES[state.base], heading=dateHeading(d);
+  let note="";
+  const chk=parts(baseTz,startUTC), want=hhmm({h:s.h,mi:s.m}), babbr=isDST(baseTz,startUTC)?bz.dst:bz.std;
+  if(chk.h!==s.h||chk.mi!==s.m){
+    note=`${want} doesn’t exist in ${bz.city} on ${heading}, because the clocks go forward that night. It’s shown as ${hhmm(chk)} ${babbr}.`;
+  } else {
+    for(const dm of [-60,60]){ const q=parts(baseTz,startUTC+dm*60000);
+      if(q.h===s.h&&q.mi===s.m&&q.d===chk.d){ note=`${want} happens twice in ${bz.city} on ${heading}, because the clocks go back that night. It’s shown as ${want} ${babbr}.`; break; } }
+  }
   for(const k of zoneOrder()){
     const z=ZONES[k], a=parts(z.tz,startUTC), b=parts(z.tz,endUTC);
     const abbr=isDST(z.tz,startUTC)?z.dst:z.std;
     const diff=Math.round((Date.UTC(a.y,a.m-1,a.d)-baseDay)/86400000);
     const tag=diff<0?" (prev day)":diff>0?" (next day)":"";
-    const sm=a.h*60+a.mi, em=b.h*60+b.mi, cross=(b.d!==a.d);
-    const cls=(sm<420||sm>=1320)?"night":(!cross&&sm>=480&&em<=1080)?"office":"edge";
-    rows[k]={time:hhmm(a)+"-"+hhmm(b)+" "+abbr, tag, cls};
+    const sm=a.h*60+a.mi, em=b.h*60+b.mi;
+    const endDays=Math.round((Date.UTC(b.y,b.m-1,b.d)-Date.UTC(a.y,a.m-1,a.d))/86400000);
+    const cls=(sm<420||sm>=1320)?"night":(endDays===0&&sm>=480&&em<=1080)?"office":"edge";
+    rows[k]={time:hhmm(a)+"-"+hhmm(b)+(endDays>0?`(+${endDays})`:"")+" "+abbr, tag, cls};
   }
-  return {heading:dateHeading(d), rows};
+  return {heading, rows, note};
 }
 function zoneOrder(){ return state.zones.includes(state.base)?state.zones.slice():[state.base,...state.zones]; }
 
@@ -251,10 +309,14 @@ function zoneOrder(){ return state.zones.includes(state.base)?state.zones.slice(
 const $=id=>document.getElementById(id);
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 
-function renderSelects(){
-  $("loc").innerHTML=Object.entries(ZONES).map(([k,z])=>`<option value="${k}" ${k===state.base?"selected":""}>${esc(z.city)} — ${esc(rowLabel(k))}</option>`).join("");
+function renderSelects(){ renderLoc(); renderZoneUI(); }
+function renderLoc(){
+  const el=$("loc"); if(!el) return;
+  el.innerHTML=Object.entries(ZONES).map(([k,z])=>`<option value="${k}" ${k===state.base?"selected":""}>${esc(z.city)} — ${esc(rowLabel(k))}</option>`).join("");
+}
+function renderZoneUI(){
   const avail=Object.keys(ZONES).filter(k=>!zoneOrder().includes(k));
-  $("addZone").innerHTML=`<option value="">Choose a city…</option>`+avail.map(k=>`<option value="${k}">${esc(ZONES[k].city)} — ${esc(rowLabel(k))}</option>`).join("");
+  $("addZone").innerHTML=`<option value="">+ Add a time zone…</option>`+avail.map(k=>`<option value="${k}">${esc(ZONES[k].city)} — ${esc(rowLabel(k))}</option>`).join("");
   $("chips").innerHTML=zoneOrder().map(k=>k===state.base
     ?`<span class="chip base">${esc(rowLabel(k))} · your location</span>`
     :`<span class="chip">${esc(rowLabel(k))}<button class="x" type="button" data-rmzone="${k}" aria-label="Remove ${esc(rowLabel(k))}">×</button></span>`).join("");
@@ -262,13 +324,14 @@ function renderSelects(){
 
 function renderGrid(){
   const cols=state.cols, baseAbbr=rowLabel(state.base);
-  let h=`<thead><tr><th class="rowlbl">Meeting</th>`+cols.map((c,i)=>`<th data-col="${i}"><span class="colhead"><button class="grip" type="button" data-drag="col" data-i="${i}" aria-label="Move meeting ${i+1} (drag or use left/right arrow keys)">⋮⋮</button>Meeting ${i+1}${cols.length>1?`<button class="del" type="button" data-rmcol="${i}" aria-label="Delete meeting ${i+1}" title="Delete meeting ${i+1}"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M6 1.5h4l.5 1H14v1.5H2V2.5h3.5zM3.2 5h9.6l-.7 9.1a1 1 0 0 1-1 .9H4.9a1 1 0 0 1-1-.9zm3 1.8v6.2h1.1V6.8zm2.5 0v6.2h1.1V6.8z"/></svg>Delete</button>`:""}</span></th>`).join("")+`</tr></thead><tbody>`;
+  let h=`<thead>`+`<tr class="in"><td class="rowlbl"><label for="loc">Your location</label></td><td class="loccell" colspan="${cols.length}"><select id="loc" aria-label="Your location (start time is in this zone)"></select></td></tr>`+`<tr><th class="rowlbl"></th>`+cols.map((c,i)=>`<th data-col="${i}"><span class="colhead"><button class="grip" type="button" data-drag="col" data-i="${i}" aria-label="Move proposed time ${i+1} (drag or use left/right arrow keys)">⋮⋮</button>Proposed time ${i+1}${cols.length>1?`<button class="del" type="button" data-rmcol="${i}" aria-label="Delete proposed time ${i+1}" title="Delete proposed time ${i+1}"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M6 1.5h4l.5 1H14v1.5H2V2.5h3.5zM3.2 5h9.6l-.7 9.1a1 1 0 0 1-1 .9H4.9a1 1 0 0 1-1-.9zm3 1.8v6.2h1.1V6.8zm2.5 0v6.2h1.1V6.8z"/></svg>Delete</button>`:""}</span></th>`).join("")+`</tr></thead><tbody>`;
   h+=`<tr class="in"><td class="rowlbl">Date</td>`+cols.map((c,i)=>`<td><input type="date" id="d${i}" data-i="${i}" data-f="date" value="${esc(c.date)}"></td>`).join("")+`</tr>`;
-  h+=`<tr class="in"><td class="rowlbl">Start time (${esc(ZONES[state.base].std===ZONES[state.base].dst?ZONES[state.base].std:baseAbbr)}) 24H</td>`+cols.map((c,i)=>`<td><input id="s${i}" inputmode="numeric" data-i="${i}" data-f="start" value="${esc(c.start)}" class="${parseStart(c.start)?"":"bad"}" aria-label="Start time meeting ${i+1}"></td>`).join("")+`</tr>`;
-  h+=`<tr class="in"><td class="rowlbl">Duration (mins)</td>`+cols.map((c,i)=>`<td><input id="u${i}" type="number" min="5" step="5" data-i="${i}" data-f="dur" value="${esc(c.dur)}" class="${parseInt(c.dur,10)>0?"":"bad"}" aria-label="Duration meeting ${i+1}"></td>`).join("")+`</tr>`;
+  h+=`<tr class="in"><td class="rowlbl">Start time (${esc(ZONES[state.base].std===ZONES[state.base].dst?ZONES[state.base].std:baseAbbr)}) 24H</td>`+cols.map((c,i)=>`<td><input id="s${i}" inputmode="numeric" data-i="${i}" data-f="start" value="${esc(c.start)}" class="${parseStart(c.start)?"":"bad"}" aria-label="Start time, proposed time ${i+1}"></td>`).join("")+`</tr>`;
+  h+=`<tr class="in"><td class="rowlbl">Duration (mins)</td>`+cols.map((c,i)=>`<td><input id="u${i}" type="number" min="5" step="5" data-i="${i}" data-f="dur" value="${esc(c.dur)}" class="${parseDur(c.dur)?"":"bad"}" aria-label="Duration, proposed time ${i+1}"></td>`).join("")+`</tr>`;
   h+=`<tr class="sep"><td colspan="${cols.length+1}"></td></tr>`;
   h+=`<tbody id="out"></tbody>`;
   $("grid").innerHTML=h;
+  renderLoc();
   renderOut();
 }
 function renderOut(){
@@ -278,6 +341,15 @@ function renderOut(){
     h+=`<tr data-k="${k}" class="zone ${k===state.base?"base":""}"><td class="rowlbl"><button class="grip" type="button" data-drag="row" data-k="${k}" aria-label="Move ${esc(rowLabel(k))} (drag or use up/down arrow keys)">⋮⋮</button>${esc(rowLabel(k))}</td>`+res.map(r=>r?`<td class="out ${r.rows[k].cls}" title="${{office:"Office hours",edge:"Early / late",night:"Overnight"}[r.rows[k].cls]}">${esc(r.rows[k].time)}${r.rows[k].tag?`<span class="tag">${esc(r.rows[k].tag)}</span>`:""}</td>`:`<td class="out">—</td>`).join("")+`</tr>`;
   }
   $("out").innerHTML=h;
+  const list=[];
+  state.cols.forEach((c,i)=>{
+    const who=`<b>Proposed time ${i+1}:</b> `;
+    if(!parseDate(c.date)) list.push(`<p class="issue err">${who}Please choose a date.</p>`);
+    if(!parseStart(c.start)) list.push(`<p class="issue err">${who}${esc(startProblem(c.start))}</p>`);
+    if(!parseDur(c.dur)) list.push(`<p class="issue err">${who}${esc(durProblem(c.dur))}</p>`);
+    if(res[i]&&res[i].note) list.push(`<p class="issue note">${who}${esc(res[i].note)}</p>`);
+  });
+  $("issues").innerHTML=list.join("");
 }
 function renderAll(){ renderSelects(); renderGrid(); save(); }
 
@@ -289,20 +361,20 @@ $("grid").addEventListener("input",e=>{
   const t=e.target; if(!t.dataset||t.dataset.f===undefined) return;
   state.cols[+t.dataset.i][t.dataset.f]=t.value;
   if(t.dataset.f==="start") t.classList.toggle("bad",!parseStart(t.value));
-  if(t.dataset.f==="dur") t.classList.toggle("bad",!(parseInt(t.value,10)>0));
+  if(t.dataset.f==="dur") t.classList.toggle("bad",!parseDur(t.value));
   renderOut(); save();
 });
 $("grid").addEventListener("click",e=>{
   const b=e.target.closest("[data-rmcol]"); if(!b) return;
   const i=+b.dataset.rmcol, removed=state.cols.splice(i,1)[0]; renderAll();
-  toast(`Meeting ${i+1} deleted.`,()=>{ state.cols.splice(Math.min(i,state.cols.length),0,removed); renderAll(); toast("Meeting restored."); });
+  toast(`Proposed time ${i+1} deleted.`,()=>{ state.cols.splice(Math.min(i,state.cols.length),0,removed); renderAll(); toast("Proposed time restored."); });
 });
 $("addCol").addEventListener("click",()=>{
   const last=state.cols[state.cols.length-1]||{date:"",start:"0900",dur:"30"};
-  state.cols.push({date:nextWorkingDay(state.base),start:last.start,dur:last.dur}); renderAll();
+  state.cols.push({date:nextWorkingDay(state.base,last.date),start:last.start,dur:last.dur}); renderAll();
   const i=state.cols.length-1; const el=$("d"+i); if(el) el.focus();
 });
-$("loc").addEventListener("change",e=>{
+$("grid").addEventListener("change",e=>{ if(e.target.id!=="loc") return;
   state.base=e.target.value; if(!state.zones.includes(state.base)) state.zones.unshift(state.base); renderAll();
 });
 $("addZone").addEventListener("change",e=>{ if(e.target.value){ state.zones.push(e.target.value); renderAll(); } });
@@ -370,7 +442,7 @@ function buildCopy(){
   const rows=[["Date",...res.map(r=>r?r.heading:"")]];
   for(const k of zoneOrder()) rows.push([rowLabel(k),...res.map(r=>r?r.rows[k].time+r.rows[k].tag:"")]);
   const tsv=rows.map(r=>r.join("\t")).join("\r\n");
-  const td=(v,b,left)=>`<td style="border:1px solid #bfbfbf;padding:2px 6px;text-align:${left?"left":"center"};${b?"font-weight:bold;":""}font-family:'Times New Roman';">${esc(v)}</td>`;
+  const td=(v,b,left)=>`<td style="border:1px solid #bfbfbf;padding:2px 6px;text-align:${left?"left":"center"};${b?"font-weight:bold;":""}font-family:Calibri,Arial,sans-serif;font-size:11pt;">${esc(v)}</td>`;
   const html=`<table style="border-collapse:collapse">`+rows.map((r,ri)=>`<tr>`+r.map((v,ci)=>td(v,ri===0&&ci>0,ci===0)).join("")+`</tr>`).join("")+`</table>`;
   return {tsv,html};
 }
@@ -383,6 +455,8 @@ function toast(msg,undo){
 $("copy").addEventListener("click",async()=>{
   const {tsv,html}=buildCopy();
   $("fallback").hidden=true;
+  /* GoatCounter: count each Copy for Excel click (only active on the GitHub version) */
+  try{ if(window.goatcounter&&window.goatcounter.count) window.goatcounter.count({path:"copy-for-excel",title:"Copy for Excel",event:true}); }catch(e){}
   try{
     if(window.ClipboardItem){
       await navigator.clipboard.write([new ClipboardItem({"text/plain":new Blob([tsv],{type:"text/plain"}),"text/html":new Blob([html],{type:"text/html"})})]);
@@ -400,5 +474,6 @@ $("copy").addEventListener("click",async()=>{
 renderAll();
 </script>
 
+<script data-goatcounter="https://gemi.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
